@@ -28,8 +28,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   final _counterBloc = CounterBloc();
+  @override
+  void dispose() {
+    _counterBloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             StreamBuilder(
               stream: _counterBloc.counterStream,
+              initialData: 0,
               builder: (context, snapshot) {
                 return Text(
                   snapshot.data.toString(),
