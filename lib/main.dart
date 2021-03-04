@@ -43,11 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             StreamBuilder(
-              stream: counterBloc.counterStream,
-              initialData: 0,
               builder: (context, snapshot) {
                 return Text(snapshot.data.toString());
               },
+              stream: counterBloc,
             )
           ],
         ),
@@ -57,21 +56,21 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           FloatingActionButton(
             onPressed: () {
-              counterBloc.eventSink.add(CounterAction.Increment);
+              counterBloc.add(CounterEvent.Increment);
             },
             tooltip: 'Increment',
             child: Icon(Icons.add),
           ),
           FloatingActionButton(
             onPressed: () {
-              counterBloc.eventSink.add(CounterAction.Decrement);
+              counterBloc.add(CounterEvent.Decrement);
             },
             tooltip: 'Decrement',
             child: Icon(Icons.remove),
           ),
           FloatingActionButton(
             onPressed: () {
-              counterBloc.eventSink.add(CounterAction.Reset);
+              counterBloc.add(CounterEvent.Reset);
             },
             tooltip: 'Reset',
             child: Icon(Icons.loop),
