@@ -1,21 +1,18 @@
-import 'package:bloc_practice/cubit/counter_cubit_cubit.dart';
+import 'package:bloc_practice/counter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new BlocProvider(
-      create: (context) => CounterCubit(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: new ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: new MyHomePage(title: 'Flutter Hello World'),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -26,50 +23,60 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final counterBloc = CounterBloc();
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-      body: new Center(
-        child: new Column(
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Text(
+            Text(
               'You have pushed the button this many times:',
             ),
-            new BlocBuilder<CounterCubit, CounterState>(
-              builder: (context, state) {
-                return Text(
-                  state.counter.toString(),
-                  style: TextStyle(fontSize: 40),
-                );
+            StreamBuilder(
+              stream: counterBloc.counterStream,
+              initialData: 0,
+              builder: (context, snapshot) {
+                return Text(snapshot.data.toString());
               },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).increment();
-                  },
-                  child: Icon(Icons.add),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).decrement();
-                  },
-                  child: Icon(Icons.remove),
-                )
-              ],
             )
           ],
         ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.Increment);
+            },
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.Decrement);
+            },
+            tooltip: 'Decrement',
+            child: Icon(Icons.remove),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.Reset);
+            },
+            tooltip: 'Reset',
+            child: Icon(Icons.loop),
+          ),
+        ],
       ),
     );
   }
